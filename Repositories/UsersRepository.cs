@@ -44,7 +44,7 @@ MultiSubnetFailover=False";
             while (reader.Read())
             {
                 User user = new User();
-                user.Id = (int)reader["Id"];
+                user.Id = (int) reader["Id"];
                 user.Username = reader["Username"].ToString();
                 user.Email = reader["Email"].ToString();
                 user.Password = reader["Password"].ToString();
@@ -55,6 +55,34 @@ MultiSubnetFailover=False";
             }
 
             return users;
+        }
+
+        public User GetById(int id)
+        {
+            this.command = this.connection.CreateCommand();
+
+            this.command.Parameters.Add(new SqlParameter("@Id", id));
+            this.command.CommandText = "SELECT * FROM Users WHERE Id=@Id";
+
+            this.connection.Open();
+
+            try
+            {
+                IDataReader reader = this.command.ExecuteReader();
+                reader.Read();
+
+                User user = this.Read(reader);
+
+                return user;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                this.connection.Close();
+            }
         }
 
         public User GetByUsernameAndPassword(string username, string password)
@@ -91,7 +119,6 @@ MultiSubnetFailover=False";
             {
                 connection.Close();
             }
-           
         }
 
         public void Insert(User user)
@@ -116,12 +143,53 @@ MultiSubnetFailover=False";
 
         public void Update(User user)
         {
+            this.command = this.connection.CreateCommand();
 
+            command.Parameters.Add(new SqlParameter("@Id", user.Id));
+            command.Parameters.Add(new SqlParameter("@Username", user.Username));
+            command.Parameters.Add(new SqlParameter("@Password", user.Password));
+            command.Parameters.Add(new SqlParameter("@Email", user.Email));
+            command.Parameters.Add(new SqlParameter("@FirstName", user.FirstName));
+            command.Parameters.Add(new SqlParameter("@LastName", user.LastName));
+
+            command.CommandText = 
+                "UPDATE Users " +
+                "SET Username=@Username, Password=@Password, Email=@Email, FirstName=@FirstName, LastName=@LastName " +
+                "WHERE Id=@Id";
+
+            connection.Open();
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
 
-        public void Delete(User user)
+        public void Delete(int id)
         {
+            this.command = this.connection.CreateCommand();
 
+            command.Parameters.Add(new SqlParameter("@Id", id));
+            command.CommandText = "DELETE FROM Users WHERE Id=@Id";
+
+            connection.Open();
+
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
+
+        private User Read(IDataReader reader)
+        {
+            User user = new User();
+
+            user.Id = (int) reader["Id"];
+            user.Username = reader["Username"].ToString();
+            user.Email = reader["Email"].ToString();
+            user.Password = reader["Password"].ToString();
+            user.FirstName = reader["FirstName"].ToString();
+            user.LastName = reader["LastName"].ToString();
+
+            return user;
         }
     }
 }
