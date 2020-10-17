@@ -1,4 +1,6 @@
-﻿namespace JobOffersMVC.ViewModels.Users
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace JobOffersMVC.ViewModels.Users
 {
     public class UserDetailsViewModel
     {
@@ -10,6 +12,7 @@
         
         public string LastName { get; set; }
 
+        [Display(Name = "Full Name")]
         public string FullName => $"{this.FirstName} {this.LastName}";
     }
 }
