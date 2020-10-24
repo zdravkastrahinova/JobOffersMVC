@@ -1,5 +1,7 @@
-﻿using JobOffersMVC.Models;
+﻿using JobOffersMVC.Filters;
+using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
+using JobOffersMVC.Services;
 using JobOffersMVC.ViewModels.Auth;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,14 +9,13 @@ namespace JobOffersMVC.Controllers
 {
     public class AuthController : Controller
     {
-        public AuthController()
-        { }
-
+        [ServiceFilter(typeof(AuthorizationFilter))]
         public IActionResult Login()
         {
             return View();
         }
 
+        [ServiceFilter(typeof(AuthorizationFilter))]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Login(LoginViewModel model)
@@ -34,14 +35,18 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
+            AuthenticationService.LoggedUser = user;
+
             return RedirectToAction("List", "Users");
         }
 
+        [ServiceFilter(typeof(AuthorizationFilter))]
         public IActionResult Register()
         {
             return View();
         }
 
+        [ServiceFilter(typeof(AuthorizationFilter))]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterViewModel model)
@@ -65,6 +70,13 @@ namespace JobOffersMVC.Controllers
             UsersRepository usersRepository = new UsersRepository();
             usersRepository.Insert(user);
 
+            return RedirectToAction("Login");
+        }
+
+        public IActionResult Logout()
+        {
+            AuthenticationService.LoggedUser = null;
+            
             return RedirectToAction("Login");
         }
     }

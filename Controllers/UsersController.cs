@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
 using JobOffersMVC.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace JobOffersMVC.Controllers
 {
+    [ServiceFilter(typeof(AuthenticationFilter))]
     public class UsersController : Controller
     {
         public IActionResult List()
