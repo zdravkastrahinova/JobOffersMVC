@@ -1,6 +1,6 @@
 ﻿using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
-using JobOffersMVC.Repositories;
+using JobOffersMVC.Repositories.Abstractions;
 using JobOffersMVC.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -10,10 +10,15 @@ namespace JobOffersMVC.Controllers
     [ServiceFilter(typeof(AuthenticationFilter))]
     public class UsersController : Controller
     {
+        private readonly IUsersRepository usersRepository;
+
+        public UsersController(IUsersRepository usersRepository)
+        {
+            this.usersRepository = usersRepository;
+        }
+
         public IActionResult List()
         {
-            UsersRepository usersRepository = new UsersRepository();
-
             UsersListViewModel model = new UsersListViewModel();
             model.Users = usersRepository
                 .GetAll()
@@ -37,7 +42,6 @@ namespace JobOffersMVC.Controllers
             }
 
             // 2. Get User by Id
-            UsersRepository usersRepository = new UsersRepository();
             User user = usersRepository.GetById(id);
 
             if (user == null)
@@ -67,7 +71,6 @@ namespace JobOffersMVC.Controllers
             }
 
             // 2. Get User from DB
-            UsersRepository usersRepository = new UsersRepository();
             User user = usersRepository.GetById(id.Value);
 
             if (user == null)
@@ -99,8 +102,6 @@ namespace JobOffersMVC.Controllers
             {
                 return View(model);
             }
-
-            UsersRepository usersRepository = new UsersRepository();
 
             // 2. Map ViewModel to Model
             User user;
@@ -151,7 +152,6 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List");
             }
 
-            UsersRepository usersRepository = new UsersRepository();
             usersRepository.Delete(id.Value);
 
             return RedirectToAction("List");
