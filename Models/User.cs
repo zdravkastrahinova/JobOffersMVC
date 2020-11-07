@@ -25,6 +25,8 @@ namespace JobOffersMVC.Models
         [MaxLength(40)]
         public string Email { get; set; }
 
-        public ICollection<JobOffer> JobOffers { get; set; }
+        public virtual ICollection<JobOffer> JobOffers { get; set; }
+
+        public virtual ICollection<UserApplication> UserApplications { get; set; }
     }
 }

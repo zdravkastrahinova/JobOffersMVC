@@ -18,13 +18,14 @@ namespace JobOffersMVC.Controllers
         {
             JobOfferListViewModel model = new JobOfferListViewModel();
             model.JobOffers = jobOffersRepository
-                .GetAll()
+                .GetJobOffersWithUser()
                 .Select(jobOffer => new JobOfferDetailsViewModel
                 {
                     Id = jobOffer.Id,
                     Title = jobOffer.Title,
                     Description = jobOffer.Description,
-                    UserId = jobOffer.UserId // TODO Add UserName to DetailsModel
+                    UserId = jobOffer.UserId,
+                    UserName = jobOffer.User.FirstName + " " + jobOffer.User.LastName
                 })
                 .ToList();
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace JobOffersMVC.Models
 {
@@ -12,6 +13,8 @@ namespace JobOffersMVC.Models
         public string Description { get; set; }
 
         public int UserId { get; set; }
-        public User User { get; set; }
+        public virtual User User { get; set; }
+
+        public virtual ICollection<UserApplication> UserApplications { get; set; }
     }
 }

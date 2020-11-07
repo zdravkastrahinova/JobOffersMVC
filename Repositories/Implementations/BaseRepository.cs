@@ -4,12 +4,12 @@ using JobOffersMVC.Models;
 using JobOffersMVC.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobOffersMVC.Repositories
+namespace JobOffersMVC.Repositories.Implementations
 {
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseModel, new()
     {
-        private readonly JobOffersDbContext dbContext;
-        private readonly DbSet<T> dbSet;
+        protected readonly JobOffersDbContext dbContext;
+        protected readonly DbSet<T> dbSet;
 
         protected BaseRepository(JobOffersDbContext context)
         {

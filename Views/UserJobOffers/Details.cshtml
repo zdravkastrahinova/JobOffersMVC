@@ -7,6 +7,11 @@
 <h1>@ViewData["Title"]</h1>
 
 <div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Apply", "Apply", "UserApplications", new { jobOfferId = Model.Id })
+</div>
+
+<div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -23,7 +28,11 @@
         </dd>
     </dl>
 </div>
+
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.Partial("~/Views/UserApplications/List.cshtml", Model.UserApplications)
+</div>
+
+<div>
     <a asp-action="List">Back to List</a>
 </div>

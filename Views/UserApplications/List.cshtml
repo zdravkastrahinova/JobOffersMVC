@@ -1,0 +1,31 @@
+﻿@model JobOffersMVC.ViewModels.UserApplications.UserApplicationListViewModel
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Job Offer Title</th>
+            <th>User</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.UserApplications) {
+        <tr>
+            <td>@item.JobOfferTitle</td>
+            <td>@item.UserName</td>
+            <td class="@(item.Status == "Accepted"
+                            ? "text-success"
+                            : (item.Status == "Rejected" ? "text-danger" : "text-secondary"))">
+                @item.Status
+            </td>
+            <td>
+                @Html.ActionLink("Accept", "Accept", "UserApplications", new { id=item.Id }) |
+                @Html.ActionLink("Reject", "Reject", "UserApplications", new { id=item.Id }) |
+                @Html.ActionLink("Delete", "Delete", "UserApplications", new { id=item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
