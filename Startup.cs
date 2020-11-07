@@ -1,6 +1,7 @@
 using JobOffersMVC.Filters;
 using JobOffersMVC.Repositories;
 using JobOffersMVC.Repositories.Abstractions;
+using JobOffersMVC.Repositories.Implementations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace JobOffersMVC
 
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IJobOffersRepository, JobOffersRepository>();
+            services.AddScoped<IUserApplicationsRepository, UserApplicationsRepository>();
 
             services.AddScoped<AuthenticationFilter>();
             services.AddScoped<AuthorizationFilter>();
