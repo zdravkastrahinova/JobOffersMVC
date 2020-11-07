@@ -2,7 +2,7 @@
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories.Abstractions;
 
-namespace JobOffersMVC.Repositories
+namespace JobOffersMVC.Repositories.Implementations
 {
     public class UsersRepository : BaseRepository<User>, IUsersRepository
     {
