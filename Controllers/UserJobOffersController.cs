@@ -1,9 +1,12 @@
-﻿using JobOffersMVC.Filters;
+﻿using JobOffersMVC.Enums;
+using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories.Abstractions;
 using JobOffersMVC.Services;
 using JobOffersMVC.ViewModels.JobOffers;
+using JobOffersMVC.ViewModels.UserApplications;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 
 namespace JobOffersMVC.Controllers
@@ -42,7 +45,7 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List");
             }
 
-            JobOffer jobOffer = jobOffersRepository.GetById(id.Value, AuthenticationService.LoggedUser.Id);
+            JobOffer jobOffer = jobOffersRepository.GetByIdWithUserApplications(id.Value, AuthenticationService.LoggedUser.Id);
 
             if (jobOffer == null)
             {
@@ -54,7 +57,19 @@ namespace JobOffersMVC.Controllers
                 Id = jobOffer.Id,
                 Title = jobOffer.Title,
                 Description = jobOffer.Description,
-                UserId = jobOffer.UserId
+                UserId = jobOffer.UserId,
+                UserApplications = new UserApplicationListViewModel
+                {
+                    UserApplications = jobOffer.UserApplications.Select(application => new UserApplicationDetailsViewModel
+                    {
+                        Id = application.Id,
+                        UserId = application.UserId,
+                        JobOfferId = application.JobOfferId,
+                        UserName = application.User.FirstName + " " + application.User.LastName,
+                        JobOfferTitle = application.JobOffer.Title,
+                        Status = Enum.GetName(typeof (ApplicationStatusEnum), application.Status)
+                    }).ToList()
+                }
             };
 
             return View(model);

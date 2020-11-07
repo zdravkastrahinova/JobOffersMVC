@@ -1,4 +1,6 @@
-﻿namespace JobOffersMVC.ViewModels.JobOffers
+﻿using JobOffersMVC.ViewModels.UserApplications;
+
+namespace JobOffersMVC.ViewModels.JobOffers
 {
     public class JobOfferDetailsViewModel
     {
@@ -11,5 +13,7 @@
         public int UserId { get; set; }
 
         public string UserName { get; set; }
+
+        public UserApplicationListViewModel UserApplications { get; set; }
     }
 }
