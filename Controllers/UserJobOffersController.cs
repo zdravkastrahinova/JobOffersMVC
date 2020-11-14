@@ -3,6 +3,7 @@ using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories.Abstractions;
 using JobOffersMVC.Services;
+using JobOffersMVC.Services.ModelServices.Abstractions;
 using JobOffersMVC.ViewModels.JobOffers;
 using JobOffersMVC.ViewModels.UserApplications;
 using Microsoft.AspNetCore.Mvc;
@@ -14,26 +15,18 @@ namespace JobOffersMVC.Controllers
     [ServiceFilter(typeof(AuthenticationFilter))]
     public class UserJobOffersController : Controller
     {
-        private readonly IJobOffersRepository jobOffersRepository;
+        private readonly IJobOffersService jobOffersService;
 
-        public UserJobOffersController(IJobOffersRepository jobOffersRepository)
+        public UserJobOffersController(IJobOffersService jobOffersService)
         {
-            this.jobOffersRepository = jobOffersRepository;
+            this.jobOffersService = jobOffersService;
         }
 
         public IActionResult List()
         {
             JobOfferListViewModel model = new JobOfferListViewModel();
-            model.JobOffers = jobOffersRepository
-                .GetAllByUserId(AuthenticationService.LoggedUser.Id)
-                .Select(o => new JobOfferDetailsViewModel
-                {
-                    Id = o.Id,
-                    Title = o.Title,
-                    Description = o.Description,
-                    UserId = o.UserId
-                })
-                .ToList();
+
+            model.JobOffers = jobOffersService.GetAllByUserId(AuthenticationService.LoggedUser.Id);
 
             return View(model);
         }
@@ -45,32 +38,12 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List");
             }
 
-            JobOffer jobOffer = jobOffersRepository.GetByIdWithUserApplications(id.Value, AuthenticationService.LoggedUser.Id);
+            JobOfferDetailsViewModel model = jobOffersService.GetByIdWithUserApplications(id.Value, AuthenticationService.LoggedUser.Id);
 
-            if (jobOffer == null)
+            if (model == null)
             {
                 return RedirectToAction("List");
             }
-
-            JobOfferDetailsViewModel model = new JobOfferDetailsViewModel
-            {
-                Id = jobOffer.Id,
-                Title = jobOffer.Title,
-                Description = jobOffer.Description,
-                UserId = jobOffer.UserId,
-                UserApplications = new UserApplicationListViewModel
-                {
-                    UserApplications = jobOffer.UserApplications.Select(application => new UserApplicationDetailsViewModel
-                    {
-                        Id = application.Id,
-                        UserId = application.UserId,
-                        JobOfferId = application.JobOfferId,
-                        UserName = application.User.FirstName + " " + application.User.LastName,
-                        JobOfferTitle = application.JobOffer.Title,
-                        Status = Enum.GetName(typeof (ApplicationStatusEnum), application.Status)
-                    }).ToList()
-                }
-            };
 
             return View(model);
         }
@@ -82,20 +55,12 @@ namespace JobOffersMVC.Controllers
                 return View(new JobOfferEditViewModel());
             }
 
-            JobOffer jobOffer = jobOffersRepository.GetById(id.Value, AuthenticationService.LoggedUser.Id);
+            JobOfferEditViewModel model = jobOffersService.GetById(id.Value, AuthenticationService.LoggedUser.Id);
 
-            if (jobOffer == null)
+            if (model == null)
             {
                 return RedirectToAction("List");
             }
-
-            JobOfferEditViewModel model = new JobOfferEditViewModel
-            {
-                Id = jobOffer.Id,
-                Title = jobOffer.Title,
-                Description = jobOffer.Description,
-                UserId = jobOffer.UserId
-            };
 
             return View(model);
         }
@@ -109,32 +74,21 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
-            JobOffer jobOffer;
             if (model.Id == 0) // create
             {
-                jobOffer = new JobOffer
-                {
-                    Title = model.Title,
-                    Description = model.Description,
-                    UserId = AuthenticationService.LoggedUser.Id
-                };
-
-                jobOffersRepository.Insert(jobOffer);
+                jobOffersService.Insert(model);
 
                 return RedirectToAction("List");
             }
 
             // edit
-            jobOffer = jobOffersRepository.GetById(model.Id, AuthenticationService.LoggedUser.Id);
+            JobOfferEditViewModel jobOffer = jobOffersService.GetById(model.Id, AuthenticationService.LoggedUser.Id);
             if (jobOffer == null)
             {
                 return RedirectToAction("List");
             }
 
-            jobOffer.Title = model.Title;
-            jobOffer.Description = model.Description;
-
-            jobOffersRepository.Update(jobOffer);
+            jobOffersService.Update(model);
 
             return RedirectToAction("List");
         }
@@ -146,7 +100,7 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List");
             }
 
-            jobOffersRepository.Delete(id.Value, AuthenticationService.LoggedUser.Id);
+            jobOffersService.Delete(id.Value, AuthenticationService.LoggedUser.Id);
 
             return RedirectToAction("List");
         }

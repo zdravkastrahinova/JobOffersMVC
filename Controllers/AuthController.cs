@@ -3,18 +3,20 @@ using JobOffersMVC.Models;
 using JobOffersMVC.Repositories;
 using JobOffersMVC.Repositories.Abstractions;
 using JobOffersMVC.Services;
+using JobOffersMVC.Services.ModelServices.Abstractions;
 using JobOffersMVC.ViewModels.Auth;
+using JobOffersMVC.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly IUsersRepository usersRepository;
+        private readonly IUsersService usersService;
 
-        public AuthController(IUsersRepository usersRepository)
+        public AuthController(IUsersService usersService)
         {
-            this.usersRepository = usersRepository;
+            this.usersService = usersService;
         }
 
         [ServiceFilter(typeof(AuthorizationFilter))]
@@ -33,7 +35,7 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
-            User user = usersRepository.GetByUsernameAndPassword(model.Username, model.Password);
+            UserDetailsViewModel user = usersService.GetByUsernameAndPassword(model.Username, model.Password);
 
             if (user == null)
             {
@@ -58,23 +60,12 @@ namespace JobOffersMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterViewModel model)
         {
-            // 1. Validate model
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            // 2. Map view model to User model
-            User user = new User
-            {
-                Username = model.Username,
-                Password = model.Password,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName
-            };
-
-            usersRepository.Insert(user);
+            usersService.Insert(model);
 
             return RedirectToAction("Login");
         }

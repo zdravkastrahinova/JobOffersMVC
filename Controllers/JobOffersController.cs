@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using JobOffersMVC.Repositories.Abstractions;
+﻿using JobOffersMVC.Services.ModelServices.Abstractions;
 using JobOffersMVC.ViewModels.JobOffers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,27 +6,18 @@ namespace JobOffersMVC.Controllers
 {
     public class JobOffersController : Controller
     {
-        private readonly IJobOffersRepository jobOffersRepository;
+        private readonly IJobOffersService jobOffersService;
 
-        public JobOffersController(IJobOffersRepository jobOffersRepository)
+        public JobOffersController(IJobOffersService jobOffersService)
         {
-            this.jobOffersRepository = jobOffersRepository;
+            this.jobOffersService = jobOffersService;
         }
 
         public IActionResult List()
         {
             JobOfferListViewModel model = new JobOfferListViewModel();
-            model.JobOffers = jobOffersRepository
-                .GetJobOffersWithUser()
-                .Select(jobOffer => new JobOfferDetailsViewModel
-                {
-                    Id = jobOffer.Id,
-                    Title = jobOffer.Title,
-                    Description = jobOffer.Description,
-                    UserId = jobOffer.UserId,
-                    UserName = jobOffer.User.FirstName + " " + jobOffer.User.LastName
-                })
-                .ToList();
+
+            model.JobOffers = jobOffersService.GetJobOffersWithUser();
 
             return View(model);
         }
