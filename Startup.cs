@@ -1,7 +1,12 @@
+using AutoMapper;
 using JobOffersMVC.Filters;
 using JobOffersMVC.Repositories;
 using JobOffersMVC.Repositories.Abstractions;
 using JobOffersMVC.Repositories.Implementations;
+using JobOffersMVC.Services.AutoMapper;
+using JobOffersMVC.Services.Helpers;
+using JobOffersMVC.Services.ModelServices.Abstractions;
+using JobOffersMVC.Services.ModelServices.Implementations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +28,22 @@ namespace JobOffersMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(Configuration.GetSection("AppSettings").Get<AppSettings>());
+
+            services.AddAutoMapper(m => m.AddProfile(new AutoMapperConfiguration()));
+
             services.AddDbContext<JobOffersDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IJobOffersRepository, JobOffersRepository>();
             services.AddScoped<IUserApplicationsRepository, UserApplicationsRepository>();
+
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IJobOffersService, JobOffersService>();
+            services.AddScoped<IUserApplicationsService, UserApplicationsService>();
+
+            services.AddScoped<IFileHelperService, FileHelperService>();
 
             services.AddScoped<AuthenticationFilter>();
             services.AddScoped<AuthorizationFilter>();
