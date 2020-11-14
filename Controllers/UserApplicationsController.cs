@@ -3,6 +3,9 @@ using JobOffersMVC.Filters;
 using JobOffersMVC.Models;
 using JobOffersMVC.Repositories.Abstractions;
 using JobOffersMVC.Services;
+using JobOffersMVC.Services.ModelServices.Abstractions;
+using JobOffersMVC.ViewModels.JobOffers;
+using JobOffersMVC.ViewModels.UserApplications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
@@ -10,13 +13,13 @@ namespace JobOffersMVC.Controllers
     [ServiceFilter(typeof(AuthenticationFilter))]
     public class UserApplicationsController : Controller
     {
-        private readonly IJobOffersRepository jobOffersRepository;
-        private readonly IUserApplicationsRepository userApplicationsRepository;
+        private readonly IJobOffersService jobOffersService;
+        private readonly IUserApplicationsService userApplicationsService;
 
-        public UserApplicationsController(IJobOffersRepository jobOffersRepository, IUserApplicationsRepository userApplicationsRepository)
+        public UserApplicationsController(IJobOffersService jobOffersService, IUserApplicationsService userApplicationsService)
         {
-            this.jobOffersRepository = jobOffersRepository;
-            this.userApplicationsRepository = userApplicationsRepository;
+            this.jobOffersService = jobOffersService;
+            this.userApplicationsService = userApplicationsService;
         }
 
         public IActionResult Apply(int? jobOfferId)
@@ -26,18 +29,20 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List", "UserJobOffers");
             }
 
-            JobOffer jobOffer = jobOffersRepository.GetById(jobOfferId.Value);
+            JobOfferEditViewModel jobOffer = jobOffersService.GetById(jobOfferId.Value);
             if (jobOffer == null)
             {
                 return RedirectToAction("List", "UserJobOffers");
             }
 
-            userApplicationsRepository.Insert(new UserApplication
+            UserApplicationEditViewModel model = new UserApplicationEditViewModel
             {
                 UserId = AuthenticationService.LoggedUser.Id,
                 JobOfferId = jobOffer.Id, // jobOfferId.Value
                 Status = ApplicationStatusEnum.Pending
-            });
+            };
+
+            userApplicationsService.Insert(model);
 
             return RedirectToAction("Details", "UserJobOffers", new { id = jobOfferId });
         }
@@ -49,17 +54,17 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List", "UserJobOffers");
             }
 
-            UserApplication application = userApplicationsRepository.GetById(id.Value);
-            if (application == null)
+            UserApplicationEditViewModel model = userApplicationsService.GetById(id.Value);
+            if (model == null)
             {
                 return RedirectToAction("List", "UserJobOffers");
             }
 
-            application.Status = ApplicationStatusEnum.Accepted;
+            model.Status = ApplicationStatusEnum.Accepted;
 
-            userApplicationsRepository.Update(application);
+            userApplicationsService.Update(model);
 
-            return RedirectToAction("Details", "UserJobOffers", new { id = application.JobOfferId });
+            return RedirectToAction("Details", "UserJobOffers", new { id = model.JobOfferId });
         }
 
         public IActionResult Reject(int? id)
@@ -69,17 +74,17 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List", "UserJobOffers");
             }
 
-            UserApplication application = userApplicationsRepository.GetById(id.Value);
-            if (application == null)
+            UserApplicationEditViewModel model = userApplicationsService.GetById(id.Value);
+            if (model == null)
             {
                 return RedirectToAction("List", "UserJobOffers");
             }
 
-            application.Status = ApplicationStatusEnum.Rejected;
+            model.Status = ApplicationStatusEnum.Rejected;
 
-            userApplicationsRepository.Update(application);
+            userApplicationsService.Update(model);
 
-            return RedirectToAction("Details", "UserJobOffers", new { id = application.JobOfferId });
+            return RedirectToAction("Details", "UserJobOffers", new { id = model.JobOfferId });
         }
 
         public IActionResult Delete(int? id)
@@ -89,15 +94,15 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List", "UserJobOffers");
             }
 
-            UserApplication application = userApplicationsRepository.GetById(id.Value);
-            if (application == null)
+            UserApplicationEditViewModel model = userApplicationsService.GetById(id.Value);
+            if (model == null)
             {
                 return RedirectToAction("List", "UserJobOffers");
             }
 
-            userApplicationsRepository.Delete(application.Id);
+            userApplicationsService.Delete(model.Id);
 
-            return RedirectToAction("Details", "UserJobOffers", new { id = application.JobOfferId });
+            return RedirectToAction("Details", "UserJobOffers", new { id = model.JobOfferId });
         }
     }
 }

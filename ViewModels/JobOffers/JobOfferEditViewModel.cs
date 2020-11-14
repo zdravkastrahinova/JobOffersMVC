@@ -2,10 +2,8 @@
 
 namespace JobOffersMVC.ViewModels.JobOffers
 {
-    public class JobOfferEditViewModel
+    public class JobOfferEditViewModel : BaseViewModel
     {
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string Title { get; set; }

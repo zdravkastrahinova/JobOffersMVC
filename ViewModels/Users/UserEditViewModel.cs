@@ -2,10 +2,8 @@
 
 namespace JobOffersMVC.ViewModels.Users
 {
-    public class UserEditViewModel
+    public class UserEditViewModel : BaseViewModel
     {
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(30, ErrorMessage = "Cannot enter username greater than 30 characters")]
         public string Username { get; set; }

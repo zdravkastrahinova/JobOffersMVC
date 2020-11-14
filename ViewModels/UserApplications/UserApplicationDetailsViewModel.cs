@@ -1,9 +1,7 @@
 ﻿namespace JobOffersMVC.ViewModels.UserApplications
 {
-    public class UserApplicationDetailsViewModel
+    public class UserApplicationDetailsViewModel : BaseViewModel
     {
-        public int Id { get; set; }
-
         public int UserId { get; set; }
 
         public int JobOfferId { get; set; }
