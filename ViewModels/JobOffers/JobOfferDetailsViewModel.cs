@@ -1,11 +1,10 @@
 ﻿using JobOffersMVC.ViewModels.UserApplications;
+using System.Collections.Generic;
 
 namespace JobOffersMVC.ViewModels.JobOffers
 {
-    public class JobOfferDetailsViewModel
+    public class JobOfferDetailsViewModel : BaseViewModel
     {
-        public int Id { get; set; }
-
         public string Title { get; set; }
 
         public string Description { get; set; }
@@ -14,6 +13,6 @@ namespace JobOffersMVC.ViewModels.JobOffers
 
         public string UserName { get; set; }
 
-        public UserApplicationListViewModel UserApplications { get; set; }
+        public List<UserApplicationDetailsViewModel> UserApplications { get; set; }
     }
 }
