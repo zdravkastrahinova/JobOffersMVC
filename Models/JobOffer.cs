@@ -16,5 +16,7 @@ namespace JobOffersMVC.Models
         public virtual User User { get; set; }
 
         public virtual ICollection<UserApplication> UserApplications { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

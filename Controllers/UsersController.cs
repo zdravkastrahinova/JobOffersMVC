@@ -100,9 +100,11 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Upload(IFormFile ProfileImage)
         {
-            usersService.UploadImage(AuthenticationService.LoggedUser.Id, ProfileImage);
+            int loggedUserId = HttpContext.Session.GetInt32("loggedUserId").Value;
 
-            return RedirectToAction("Details", new { id = AuthenticationService.LoggedUser.Id });
+            usersService.UploadImage(loggedUserId, ProfileImage);
+
+            return RedirectToAction("Details", new { id = loggedUserId });
         }
     }
 }
