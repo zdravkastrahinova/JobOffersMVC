@@ -28,6 +28,10 @@ namespace JobOffersMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
             services.AddSingleton(Configuration.GetSection("AppSettings").Get<AppSettings>());
 
             services.AddAutoMapper(m => m.AddProfile(new AutoMapperConfiguration()));
@@ -38,10 +42,12 @@ namespace JobOffersMVC
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IJobOffersRepository, JobOffersRepository>();
             services.AddScoped<IUserApplicationsRepository, UserApplicationsRepository>();
+            services.AddScoped<ICommentsRepository, CommentsRepository>();
 
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IJobOffersService, JobOffersService>();
             services.AddScoped<IUserApplicationsService, UserApplicationsService>();
+            services.AddScoped<ICommentsService, CommentsService>();
 
             services.AddScoped<IFileHelperService, FileHelperService>();
 
@@ -73,6 +79,8 @@ namespace JobOffersMVC
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

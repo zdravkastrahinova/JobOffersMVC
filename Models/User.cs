@@ -30,5 +30,7 @@ namespace JobOffersMVC.Models
         public virtual ICollection<JobOffer> JobOffers { get; set; }
 
         public virtual ICollection<UserApplication> UserApplications { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

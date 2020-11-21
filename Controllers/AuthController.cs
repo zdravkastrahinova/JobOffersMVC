@@ -6,6 +6,7 @@ using JobOffersMVC.Services;
 using JobOffersMVC.Services.ModelServices.Abstractions;
 using JobOffersMVC.ViewModels.Auth;
 using JobOffersMVC.ViewModels.Users;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
@@ -44,7 +45,7 @@ namespace JobOffersMVC.Controllers
                 return View(model);
             }
 
-            AuthenticationService.LoggedUser = user;
+            HttpContext.Session.SetInt32("loggedUserId", user.Id); // JsonSerializer.Serialize(user)
 
             return RedirectToAction("List", "Users");
         }
@@ -72,7 +73,7 @@ namespace JobOffersMVC.Controllers
 
         public IActionResult Logout()
         {
-            AuthenticationService.LoggedUser = null;
+            HttpContext.Session.Clear();
             
             return RedirectToAction("Login");
         }

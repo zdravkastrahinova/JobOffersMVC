@@ -13,6 +13,7 @@ namespace JobOffersMVC.Repositories
         public DbSet<User> Users { get; set; }
         public DbSet<JobOffer> JobOffers { get; set; }
         public DbSet<UserApplication> UserApplications { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -45,6 +46,26 @@ namespace JobOffersMVC.Repositories
 
             modelBuilder.Entity<JobOffer>()
                 .HasOne(j => j.User);
+
+            modelBuilder.Entity<User>()
+                .HasMany(entity => entity.Comments)
+                .WithOne()
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<JobOffer>()
+                .HasMany(entity => entity.Comments)
+                .WithOne()
+                .HasForeignKey(j => j.JobOfferId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Comments);
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.JobOffer)
+                .WithMany(j => j.Comments);
         }
     }
 }

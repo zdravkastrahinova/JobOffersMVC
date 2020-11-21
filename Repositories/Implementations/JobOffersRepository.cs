@@ -31,7 +31,7 @@ namespace JobOffersMVC.Repositories.Implementations
 
         public JobOffer GetByIdWithUserApplications(int id, int userId)
         {
-            return dbSet.Include(jo => jo.UserApplications).FirstOrDefault(jo => jo.Id == id && jo.UserId == userId);
+            return dbSet.Include(jo => jo.UserApplications).Include(jo => jo.Comments).FirstOrDefault(jo => jo.Id == id && jo.UserId == userId);
         }
 
         public void Delete(int id, int userId)
@@ -43,7 +43,9 @@ namespace JobOffersMVC.Repositories.Implementations
                 return;
             }
 
+            dbContext.Comments.RemoveRange(jobOffer.Comments);
             dbContext.UserApplications.RemoveRange(jobOffer.UserApplications);
+
             dbSet.Remove(jobOffer);
 
             dbContext.SaveChanges();

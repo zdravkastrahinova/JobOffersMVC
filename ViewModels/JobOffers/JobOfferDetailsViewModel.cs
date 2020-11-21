@@ -1,4 +1,5 @@
-﻿using JobOffersMVC.ViewModels.UserApplications;
+﻿using JobOffersMVC.ViewModels.Comments;
+using JobOffersMVC.ViewModels.UserApplications;
 using System.Collections.Generic;
 
 namespace JobOffersMVC.ViewModels.JobOffers
@@ -14,5 +15,7 @@ namespace JobOffersMVC.ViewModels.JobOffers
         public string UserName { get; set; }
 
         public List<UserApplicationDetailsViewModel> UserApplications { get; set; }
+
+        public List<CommentDetailsViewModel> Comments { get; set; }
     }
 }

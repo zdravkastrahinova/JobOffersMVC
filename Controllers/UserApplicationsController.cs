@@ -6,6 +6,7 @@ using JobOffersMVC.Services;
 using JobOffersMVC.Services.ModelServices.Abstractions;
 using JobOffersMVC.ViewModels.JobOffers;
 using JobOffersMVC.ViewModels.UserApplications;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobOffersMVC.Controllers
@@ -37,7 +38,7 @@ namespace JobOffersMVC.Controllers
 
             UserApplicationEditViewModel model = new UserApplicationEditViewModel
             {
-                UserId = AuthenticationService.LoggedUser.Id,
+                UserId = HttpContext.Session.GetInt32("loggedUserId").Value, // AuthenticationService.LoggedUser.Id,
                 JobOfferId = jobOffer.Id, // jobOfferId.Value
                 Status = ApplicationStatusEnum.Pending
             };

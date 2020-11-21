@@ -6,6 +6,7 @@ using JobOffersMVC.Services;
 using JobOffersMVC.Services.ModelServices.Abstractions;
 using JobOffersMVC.ViewModels.JobOffers;
 using JobOffersMVC.ViewModels.UserApplications;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace JobOffersMVC.Controllers
         {
             JobOfferListViewModel model = new JobOfferListViewModel();
 
-            model.JobOffers = jobOffersService.GetAllByUserId(AuthenticationService.LoggedUser.Id);
+            model.JobOffers = jobOffersService.GetAllByUserId(HttpContext.Session.GetInt32("loggedUserId").Value);
 
             return View(model);
         }
@@ -38,7 +39,7 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List");
             }
 
-            JobOfferDetailsViewModel model = jobOffersService.GetByIdWithUserApplications(id.Value, AuthenticationService.LoggedUser.Id);
+            JobOfferDetailsViewModel model = jobOffersService.GetByIdWithUserApplications(id.Value, HttpContext.Session.GetInt32("loggedUserId").Value);
 
             if (model == null)
             {
@@ -55,7 +56,7 @@ namespace JobOffersMVC.Controllers
                 return View(new JobOfferEditViewModel());
             }
 
-            JobOfferEditViewModel model = jobOffersService.GetById(id.Value, AuthenticationService.LoggedUser.Id);
+            JobOfferEditViewModel model = jobOffersService.GetById(id.Value, HttpContext.Session.GetInt32("loggedUserId").Value);
 
             if (model == null)
             {
@@ -82,7 +83,7 @@ namespace JobOffersMVC.Controllers
             }
 
             // edit
-            JobOfferEditViewModel jobOffer = jobOffersService.GetById(model.Id, AuthenticationService.LoggedUser.Id);
+            JobOfferEditViewModel jobOffer = jobOffersService.GetById(model.Id, HttpContext.Session.GetInt32("loggedUserId").Value);
             if (jobOffer == null)
             {
                 return RedirectToAction("List");
@@ -100,7 +101,7 @@ namespace JobOffersMVC.Controllers
                 return RedirectToAction("List");
             }
 
-            jobOffersService.Delete(id.Value, AuthenticationService.LoggedUser.Id);
+            jobOffersService.Delete(id.Value, HttpContext.Session.GetInt32("loggedUserId").Value);
 
             return RedirectToAction("List");
         }

@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.Http; 
+@model List<JobOffersMVC.ViewModels.Comments.CommentDetailsViewModel>
+
+<h4>Comments</h4>
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="form-comment">
+
+            <div class="form-group">
+                <label for="comment">Add Comment</label>
+                <input type="text" class="form-control" id="comment" />
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <p class="text-black-50">No comments</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Comment</th>
+                <th>Author</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Text)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @if (Context.Session.GetInt32("loggedUserId").Value == item.UserId)
+                        {
+                            <a href="Comments/Edit/@item.Id" class="edit-link" data-id="@item.Id" data-text="@item.Text">Edit</a>
+                            @Html.ActionLink("Delete", "Delete", "Comments", new { id = item.Id })
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

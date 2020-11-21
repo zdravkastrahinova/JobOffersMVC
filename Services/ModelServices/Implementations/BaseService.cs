@@ -50,14 +50,14 @@ namespace JobOffersMVC.Services.ModelServices.Implementations
             return mapper.Map<TModel, TDetailsViewModel>(model);
         }
 
-        public void Insert(TEditViewModel viewModel)
+        public virtual void Insert(TEditViewModel viewModel)
         {
             TModel model = mapper.Map<TModel>(viewModel);
 
             repository.Insert(model);
         }
 
-        public void Update(TEditViewModel viewModel)
+        public virtual void Update(TEditViewModel viewModel)
         {
             TModel model = mapper.Map<TModel>(viewModel);
 

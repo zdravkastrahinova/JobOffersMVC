@@ -3,19 +3,34 @@ using JobOffersMVC.Models;
 using JobOffersMVC.Repositories.Abstractions;
 using JobOffersMVC.Services.ModelServices.Abstractions;
 using JobOffersMVC.ViewModels.JobOffers;
-using System;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace JobOffersMVC.Services.ModelServices.Implementations
 {
     public class JobOffersService : BaseService<JobOffer, JobOfferDetailsViewModel, JobOfferEditViewModel>, IJobOffersService
     {
-        public JobOffersService(IJobOffersRepository jobOffersRepository, IMapper mapper)
+        private IHttpContextAccessor contextAccessor;
+
+        public JobOffersService(IJobOffersRepository jobOffersRepository, IMapper mapper, IHttpContextAccessor contextAccessor)
             : base(jobOffersRepository, mapper)
         {
+            this.contextAccessor = contextAccessor;
+        }
 
+        public override void Insert(JobOfferEditViewModel viewModel)
+        {
+            viewModel.UserId = contextAccessor.HttpContext.Session.GetInt32("loggedUserId").Value;
+
+            base.Insert(viewModel);
+        }
+
+        public override void Update(JobOfferEditViewModel viewModel)
+        {
+            viewModel.UserId = contextAccessor.HttpContext.Session.GetInt32("loggedUserId").Value;
+
+            base.Update(viewModel);
         }
 
         public void Delete(int id, int userId)
