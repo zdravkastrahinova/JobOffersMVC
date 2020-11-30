@@ -60,6 +60,13 @@ namespace JobOffersMVC.Services.ModelServices.Implementations
             return mapper.Map<JobOfferDetailsViewModel>(jobOffer);
         }
 
+        public JobOfferDetailsViewModel GetDetails(int id, int userId)
+        {
+            JobOffer item = ((IJobOffersRepository)repository).GetDetails(id, userId);
+
+            return mapper.Map<JobOfferDetailsViewModel>(item);
+        }
+
         public List<JobOfferDetailsViewModel> GetJobOffersWithUser()
         {
             return ((IJobOffersRepository)repository)

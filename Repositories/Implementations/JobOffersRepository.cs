@@ -29,6 +29,11 @@ namespace JobOffersMVC.Repositories.Implementations
             return GetAll().FirstOrDefault(o => o.Id == id && o.UserId == userId);
         }
 
+        public JobOffer GetDetails(int id, int userId)
+        {
+            return dbSet.Include(offer => offer.User).FirstOrDefault(offer => offer.Id == id && offer.UserId == userId);
+        }
+
         public JobOffer GetByIdWithUserApplications(int id, int userId)
         {
             return dbSet.Include(jo => jo.UserApplications).Include(jo => jo.Comments).FirstOrDefault(jo => jo.Id == id && jo.UserId == userId);

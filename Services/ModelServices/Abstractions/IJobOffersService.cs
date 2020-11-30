@@ -10,6 +10,8 @@ namespace JobOffersMVC.Services.ModelServices.Abstractions
 
         List<JobOfferDetailsViewModel> GetAllByUserId(int userId);
 
+        JobOfferDetailsViewModel GetDetails(int id, int userId);
+
         JobOfferDetailsViewModel GetByIdWithUserApplications(int id, int userId);
 
         JobOfferEditViewModel GetById(int id, int userId);
