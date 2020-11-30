@@ -50,6 +50,7 @@ namespace JobOffersMVC
             services.AddScoped<ICommentsService, CommentsService>();
 
             services.AddScoped<IFileHelperService, FileHelperService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             services.AddScoped<AuthenticationFilter>();
             services.AddScoped<AuthorizationFilter>();

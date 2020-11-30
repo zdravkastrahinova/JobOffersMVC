@@ -8,7 +8,7 @@ namespace JobOffersMVC.Repositories.Abstractions
         List<JobOffer> GetJobOffersWithUser();
         List<JobOffer> GetAllByUserId(int userId);
         JobOffer GetById(int id, int userId);
-
+        JobOffer GetDetails(int id, int userId);
         JobOffer GetByIdWithUserApplications(int id, int userId);
         void Delete(int id, int userId);
     }
